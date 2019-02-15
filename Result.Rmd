@@ -43,12 +43,12 @@ PostsForAnalysis %>%
 3 搜索科技产品触觉达人
 ```{r pressure2, echo=FALSE}
 UsersForAnalysis %>% 
-  filter(n_distinct(name)>30) %>% 
+  filter(posts_count>30) %>% 
   select(name,votes_count,posts_count) %>% 
   group_by(name) %>% 
   summarise(n=sum(votes_count)/n_distinct(name)) %>% 
   arrange(desc(n)) %>% 
   head(20) %>% 
-  ggplot(mapping=aes(x=n,y=name))+
-  geom_bar() + coord_flip()
+  ggplot(mapping=aes(x=name,y=n))+
+  geom_bar(stat="identity") + coord_flip()
 ```
