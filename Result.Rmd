@@ -1,0 +1,54 @@
+---
+title: "Result"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggthemes)
+library(ggplot2)
+library(lubridate)
+
+ALLTopics <- readr::read_csv("data/ALLTopics.csv")
+PostsForAnalysis <- readr::read_csv("data/PostsForAnalysis.csv")
+PostsTopicsForAnalysis <- readr::read_csv("data/PostsTopicsForAnalysis.csv")
+UsersForAnalysis <- readr::read_csv("data/UsersForAnalysis.csv")
+```
+
+1 针对主题的探索
+```{r pressure, echo=FALSE}
+ALLTopics %>% 
+  select(name,num_posts,num_followers) %>% 
+  group_by(name) %>% 
+  summarise(n=num_posts,num_followers) %>% 
+  arrange(desc(n)) %>% 
+  head(20) %>% 
+  ggplot(mapping=aes(x=name,y=n,size=num_followers))+
+  geom_bar(stat="identity",width = 0.4)+
+  geom_point()
+```
+
+2 针对帖子发布时间的探索
+```{r pressure1, echo=FALSE}
+PostsForAnalysis %>% 
+  mutate(year=lubridate::year(PostsForAnalysis$date)) %>% 
+  select(year,votes_count,time_of_day) %>% 
+  group_by(year,time_of_day) %>% 
+  summarise(vote=sum(votes_count)) %>% 
+  ggplot(mapping=aes(x=year,y=vote))+
+  geom_bar(stat="identity", aes(fill=time_of_day),position = "dodge")
+```
+
+3 搜索科技产品触觉达人
+```{r pressure2, echo=FALSE}
+UsersForAnalysis %>% 
+  filter(n_distinct(name)>30) %>% 
+  select(name,votes_count,posts_count) %>% 
+  group_by(name) %>% 
+  summarise(n=sum(votes_count)/n_distinct(name)) %>% 
+  arrange(desc(n)) %>% 
+  head(20) %>% 
+  ggplot(mapping=aes(x=n,y=name))+
+  geom_bar() + coord_flip()
+```
