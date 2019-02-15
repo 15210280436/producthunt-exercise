@@ -46,7 +46,7 @@ UsersForAnalysis %>%
   filter(posts_count>30) %>% 
   select(name,votes_count,posts_count) %>% 
   group_by(name) %>% 
-  summarise(n=sum(votes_count)/n_distinct(name)) %>% 
+  summarise(n=sum(votes_count)/posts_count) %>% 
   arrange(desc(n)) %>% 
   head(20) %>% 
   ggplot(mapping=aes(x=name,y=n))+
