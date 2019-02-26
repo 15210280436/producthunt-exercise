@@ -2,13 +2,14 @@ library(tidyverse)
 library(ggthemes)
 library(ggplot2)
 library(lubridate)
+library(plotly)
 
 ALLTopics <- readr::read_csv("data/ALLTopics.csv")
 PostsForAnalysis <- readr::read_csv("data/PostsForAnalysis.csv")
 PostsTopicsForAnalysis <- readr::read_csv("data/PostsTopicsForAnalysis.csv")
 UsersForAnalysis <- readr::read_csv("data/UsersForAnalysis.csv")
 
-ALLTopics %>% 
+p <- ALLTopics %>% 
   select(name,num_posts,num_followers) %>% 
   group_by(name) %>% 
   summarise(n=num_posts,num_followers) %>% 
@@ -19,6 +20,8 @@ ALLTopics %>%
   geom_point(col = "navyblue")+
   labs(x = "Topic", y = "# Posts", size = "# Followers") + 
   theme(axis.text.x = element_text(angle = 30))
+
+ggplotly(p)
 
 # Does More Posts Mean More Followers? ------------------------------------
 
